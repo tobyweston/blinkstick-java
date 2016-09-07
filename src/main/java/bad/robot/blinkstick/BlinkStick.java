@@ -1,199 +1,17 @@
 package bad.robot.blinkstick;
 
 import com.codeminders.hidapi.HIDDevice;
-import com.codeminders.hidapi.HIDDeviceInfo;
-import com.codeminders.hidapi.HIDManager;
 
-import java.util.*;
-import java.util.stream.IntStream;
+import java.util.Random;
 
-import static com.codeminders.hidapi.ClassPathLibraryLoader.*;
+import static java.lang.String.*;
 
 public class BlinkStick {
 
-	public final static String VERSION = "##library.prettyVersion##";
+	private HIDDevice device;
 
-	private static Boolean initialized = false;
-
-	public static final Hashtable<String, String> COLORS = new Hashtable<String, String>() {
-		/**
-		 *
-		 */
-		private static final long serialVersionUID = 1L;
-
-		{
-			put("aqua", "#00ffff");
-			put("aliceblue", "#f0f8ff");
-			put("antiquewhite", "#faebd7");
-			put("black", "#000000");
-			put("blue", "#0000ff");
-			put("cyan", "#00ffff");
-			put("darkblue", "#00008b");
-			put("darkcyan", "#008b8b");
-			put("darkgreen", "#006400");
-			put("darkturquoise", "#00ced1");
-			put("deepskyblue", "#00bfff");
-			put("green", "#008000");
-			put("lime", "#00ff00");
-			put("mediumblue", "#0000cd");
-			put("mediumspringgreen", "#00fa9a");
-			put("navy", "#000080");
-			put("springgreen", "#00ff7f");
-			put("teal", "#008080");
-			put("midnightblue", "#191970");
-			put("dodgerblue", "#1e90ff");
-			put("lightseagreen", "#20b2aa");
-			put("forestgreen", "#228b22");
-			put("seagreen", "#2e8b57");
-			put("darkslategray", "#2f4f4f");
-			put("darkslategrey", "#2f4f4f");
-			put("limegreen", "#32cd32");
-			put("mediumseagreen", "#3cb371");
-			put("turquoise", "#40e0d0");
-			put("royalblue", "#4169e1");
-			put("steelblue", "#4682b4");
-			put("darkslateblue", "#483d8b");
-			put("mediumturquoise", "#48d1cc");
-			put("indigo", "#4b0082");
-			put("darkolivegreen", "#556b2f");
-			put("cadetblue", "#5f9ea0");
-			put("cornflowerblue", "#6495ed");
-			put("mediumaquamarine", "#66cdaa");
-			put("dimgray", "#696969");
-			put("dimgrey", "#696969");
-			put("slateblue", "#6a5acd");
-			put("olivedrab", "#6b8e23");
-			put("slategray", "#708090");
-			put("slategrey", "#708090");
-			put("lightslategray", "#778899");
-			put("lightslategrey", "#778899");
-			put("mediumslateblue", "#7b68ee");
-			put("lawngreen", "#7cfc00");
-			put("aquamarine", "#7fffd4");
-			put("chartreuse", "#7fff00");
-			put("gray", "#808080");
-			put("grey", "#808080");
-			put("maroon", "#800000");
-			put("olive", "#808000");
-			put("purple", "#800080");
-			put("lightskyblue", "#87cefa");
-			put("skyblue", "#87ceeb");
-			put("blueviolet", "#8a2be2");
-			put("darkmagenta", "#8b008b");
-			put("darkred", "#8b0000");
-			put("saddlebrown", "#8b4513");
-			put("darkseagreen", "#8fbc8f");
-			put("lightgreen", "#90ee90");
-			put("mediumpurple", "#9370db");
-			put("darkviolet", "#9400d3");
-			put("palegreen", "#98fb98");
-			put("darkorchid", "#9932cc");
-			put("yellowgreen", "#9acd32");
-			put("sienna", "#a0522d");
-			put("brown", "#a52a2a");
-			put("darkgray", "#a9a9a9");
-			put("darkgrey", "#a9a9a9");
-			put("greenyellow", "#adff2f");
-			put("lightblue", "#add8e6");
-			put("paleturquoise", "#afeeee");
-			put("lightsteelblue", "#b0c4de");
-			put("powderblue", "#b0e0e6");
-			put("firebrick", "#b22222");
-			put("darkgoldenrod", "#b8860b");
-			put("mediumorchid", "#ba55d3");
-			put("rosybrown", "#bc8f8f");
-			put("darkkhaki", "#bdb76b");
-			put("silver", "#c0c0c0");
-			put("mediumvioletred", "#c71585");
-			put("indianred", "#cd5c5c");
-			put("peru", "#cd853f");
-			put("chocolate", "#d2691e");
-			put("tan", "#d2b48c");
-			put("lightgray", "#d3d3d3");
-			put("lightgrey", "#d3d3d3");
-			put("thistle", "#d8bfd8");
-			put("goldenrod", "#daa520");
-			put("orchid", "#da70d6");
-			put("palevioletred", "#db7093");
-			put("crimson", "#dc143c");
-			put("gainsboro", "#dcdcdc");
-			put("plum", "#dda0dd");
-			put("burlywood", "#deb887");
-			put("lightcyan", "#e0ffff");
-			put("lavender", "#e6e6fa");
-			put("darksalmon", "#e9967a");
-			put("palegoldenrod", "#eee8aa");
-			put("violet", "#ee82ee");
-			put("azure", "#f0ffff");
-			put("honeydew", "#f0fff0");
-			put("khaki", "#f0e68c");
-			put("lightcoral", "#f08080");
-			put("sandybrown", "#f4a460");
-			put("beige", "#f5f5dc");
-			put("mintcream", "#f5fffa");
-			put("wheat", "#f5deb3");
-			put("whitesmoke", "#f5f5f5");
-			put("ghostwhite", "#f8f8ff");
-			put("lightgoldenrodyellow", "#fafad2");
-			put("linen", "#faf0e6");
-			put("salmon", "#fa8072");
-			put("oldlace", "#fdf5e6");
-			put("bisque", "#ffe4c4");
-			put("blanchedalmond", "#ffebcd");
-			put("coral", "#ff7f50");
-			put("cornsilk", "#fff8dc");
-			put("darkorange", "#ff8c00");
-			put("deeppink", "#ff1493");
-			put("floralwhite", "#fffaf0");
-			put("fuchsia", "#ff00ff");
-			put("gold", "#ffd700");
-			put("hotpink", "#ff69b4");
-			put("ivory", "#fffff0");
-			put("lavenderblush", "#fff0f5");
-			put("lemonchiffon", "#fffacd");
-			put("lightpink", "#ffb6c1");
-			put("lightsalmon", "#ffa07a");
-			put("lightyellow", "#ffffe0");
-			put("magenta", "#ff00ff");
-			put("mistyrose", "#ffe4e1");
-			put("moccasin", "#ffe4b5");
-			put("navajowhite", "#ffdead");
-			put("orange", "#ffa500");
-			put("orangered", "#ff4500");
-			put("papayawhip", "#ffefd5");
-			put("peachpuff", "#ffdab9");
-			put("pink", "#ffc0cb");
-			put("red", "#ff0000");
-			put("seashell", "#fff5ee");
-			put("snow", "#fffafa");
-			put("tomato", "#ff6347");
-			put("white", "#ffffff");
-			put("yellow", "#ffff00");
-		}
-	};
-
-	/**
-	 * BlinkStick vendor ID
-	 */
-	public final static int VENDOR_ID = 0x20a0;
-
-	/**
-	 * BlinkStick product ID
-	 */
-	public final static int PRODUCT_ID = 0x41e5;
-
-	/**
-	 * HID device object to communicate directly with BlinkStick
-	 */
-	private HIDDevice device = null;
-
-	/**
-	 * return the version of the library.
-	 *
-	 * @return String
-	 */
-	public static String version() {
-		return VERSION;
+	BlinkStick(HIDDevice device) {
+		this.device = device;
 	}
 
 	/**
@@ -205,106 +23,6 @@ public class BlinkStick {
 		this.device = device;
 	}
 
-	/**
-	 * Load hidapi library based on the OS. This function is automatically called whenever
-	 * a search for BlinkStick is performed for the first time.
-	 */
-	public static boolean loadLibrary() {
-		return loadNativeHIDLibrary();
-	}
-
-	/**
-	 * Find first BlinkStick connected to the computer
-	 *
-	 * @return BlinkStick object or null if no BlinkSticks are connected
-	 */
-	public static Optional<BlinkStick> findFirst() {
-		HIDDeviceInfo[] infos = findAllDescriptors();
-
-		if (infos.length > 0) {
-			BlinkStick result = new BlinkStick();
-			try {
-				result.setDevice(infos[0].open());
-				return Optional.of(result);
-			} catch (Exception e) {
-				Optional.empty();
-			}
-		}
-		return Optional.empty();
-	}
-
-	/**
-	 * Find BlinkStick by serial number
-	 *
-	 * @param serial The serial number to search
-	 * @return BlinkStick object or null if device was not found
-	 */
-	public static BlinkStick findBySerial(String serial) {
-		loadLibrary();
-
-		HIDDeviceInfo[] infos = findAllDescriptors();
-
-		for (HIDDeviceInfo info : infos) {
-			if (info.getSerial_number().equals(serial)) {
-				BlinkStick result = new BlinkStick();
-				try {
-					result.setDevice(infos[0].open());
-					return result;
-				} catch (Exception e) {
-				}
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Find all BlinkStick HIDDeviceInfo descriptions connected to the computer
-	 *
-	 * @return an array of HIDDeviceInfo objects with VID and PID matching BlinkStick
-	 */
-	private static HIDDeviceInfo[] findAllDescriptors() {
-
-		List<HIDDeviceInfo> blinkstickList = new ArrayList<>();
-
-		try {
-			HIDManager hidManager = HIDManager.getInstance();
-
-			HIDDeviceInfo[] infos = hidManager.listDevices();
-
-			for (HIDDeviceInfo info : infos) {
-//				System.out.println(info.getManufacturer_string() + " " + " " + info.getProduct_string());
-				if (info.getVendor_id() == VENDOR_ID && info.getProduct_id() == PRODUCT_ID) {
-					blinkstickList.add(info);
-				}
-			}
-		} catch (Exception e) {
-		}
-
-		return blinkstickList.toArray(new HIDDeviceInfo[blinkstickList.size()]);
-	}
-
-	/**
-	 * Find all BlinkSticks connected to the computer
-	 *
-	 * @return an array of BlinkStick objects
-	 */
-	public static BlinkStick[] findAll() {
-		List<BlinkStick> blinkstickList = new ArrayList<BlinkStick>();
-
-		HIDDeviceInfo[] infos = findAllDescriptors();
-
-		for (HIDDeviceInfo info : infos) {
-			BlinkStick blinkstick = new BlinkStick();
-			try {
-				blinkstick.setDevice(info.open());
-				blinkstickList.add(blinkstick);
-			} catch (Exception e) {
-			}
-		}
-
-		return blinkstickList.toArray(new BlinkStick[blinkstickList.size()]);
-	}
 
 	/**
 	 * Set the color of the device with separate r, g and b int values.
@@ -329,7 +47,7 @@ public class BlinkStick {
 		try {
 			device.sendFeatureReport(new byte[]{1, r, g, b});
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -359,8 +77,7 @@ public class BlinkStick {
 		try {
 			device.sendFeatureReport(new byte[]{5, channel, index, r, g, b});
 		} catch (Exception e) {
-			System.err.println(e.getClass() + " " + e.getMessage() + " " + e.getCause());
-//			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -406,52 +123,19 @@ public class BlinkStick {
 		this.setColor(r, g, b);
 	}
 
-	/**
-	 * Set the color of the device with string value
-	 *
-	 * @param value this can either be a named color "red", "green", "blue" and etc.
-	 *              or a hex color in #rrggbb format
-	 */
-	public void setColor(String value) {
-		if (COLORS.containsKey(value)) {
-			this.setColor(hex2Rgb(COLORS.get(value)));
-		} else {
-			this.setColor(hex2Rgb(value));
-		}
+	public void setColor(Color color) {
+		this.setColor(color.rgb());
 	}
 
-	/**
-	 * Set random color
-	 */
 	public void setRandomColor() {
 		Random random = new Random();
-		this.setColor(
-			random.nextInt(256),
-			random.nextInt(256),
-			random.nextInt(256));
+		this.setColor(random.nextInt(256), random.nextInt(256), random.nextInt(256));
 	}
 
-	/**
-	 * Turn the device off
-	 */
 	public void turnOff() {
 		this.setColor(0, 0, 0);
 	}
 
-
-	/**
-	 * Convert hex string to color object
-	 *
-	 * @param colorStr Color value as hex string #rrggbb
-	 * @return color object
-	 */
-	public static int hex2Rgb(String colorStr) {
-		int red = Integer.valueOf(colorStr.substring(1, 3), 16) + 0;
-		int green = Integer.valueOf(colorStr.substring(3, 5), 16) + 0;
-		int blue = Integer.valueOf(colorStr.substring(5, 7), 16) + 0;
-
-		return (255 << 24) | (red << 16) | (green << 8) | blue;
-	}
 
 	/**
 	 * Get the current color of the device as int
@@ -468,6 +152,7 @@ public class BlinkStick {
 				return (255 << 24) | (data[1] << 16) | (data[2] << 8) | data[3];
 			}
 		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 
 		return 0;
@@ -485,9 +170,7 @@ public class BlinkStick {
 		int green = (c >> 8) & 0xFF;
 		int blue = c & 0xFF;
 
-		return "#" + String.format("%02X", red)
-			+ String.format("%02X", green)
-			+ String.format("%02X", blue);
+		return format("#%02X%02X%02X", red, green, blue);
 	}
 
 	/**
@@ -512,6 +195,7 @@ public class BlinkStick {
 				}
 			}
 		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 
 		return result;
@@ -558,8 +242,7 @@ public class BlinkStick {
 		try {
 			device.sendFeatureReport(data);
 		} catch (Exception e) {
-			e.printStackTrace();
-
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -712,7 +395,7 @@ public class BlinkStick {
 		try {
 			device.sendFeatureReport(data);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -730,11 +413,11 @@ public class BlinkStick {
 	 *
 	 * @param mode 0 - Normal, 1 - Inverse, 2 - WS2812, 3 - WS2812 mirror
 	 */
-	public void setMode(byte mode) {
+	private void setMode(byte mode) {
 		try {
 			device.sendFeatureReport(new byte[]{4, mode});
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 
@@ -753,6 +436,7 @@ public class BlinkStick {
 				return data[1];
 			}
 		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 
 		return -1;
