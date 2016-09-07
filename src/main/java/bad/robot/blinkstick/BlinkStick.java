@@ -4,6 +4,7 @@ import com.codeminders.hidapi.HIDDevice;
 
 import java.util.Random;
 
+import static bad.robot.blinkstick.Mode.Unknown;
 import static java.lang.String.*;
 
 public class BlinkStick {
@@ -399,13 +400,9 @@ public class BlinkStick {
 		}
 	}
 
-	/**
-	 * Set the mode of BlinkStick Pro as int
-	 *
-	 * @param mode 0 - Normal, 1 - Inverse, 2 - WS2812, 3 - WS2812 mirror
-	 */
-	public void setMode(int mode) {
-		this.setMode((byte) mode);
+	public void setMode(Mode mode) {
+		if (getMode() != mode)
+			setMode(mode.asByte());
 	}
 
 	/**
@@ -421,25 +418,20 @@ public class BlinkStick {
 		}
 	}
 
-	/**
-	 * Get the mode of BlinkStick Pro
-	 *
-	 * @return 0 - Normal, 1 - Inverse, 2 - WS2812, 3 - WS2812 mirror
-	 */
-	public byte getMode() {
+	public Mode getMode() {
 		byte[] data = new byte[2];
 		data[0] = 4;// First byte is ReportID
 
 		try {
 			int read = device.getFeatureReport(data);
 			if (read > 0) {
-				return data[1];
+				return Mode.fromByte(data[1]);
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 
-		return -1;
+		return Unknown;
 	}
 
 

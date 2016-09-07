@@ -22,21 +22,14 @@ public class Spinner {
 			});
 			return blinkStick;
 		});
-		sleep(1500);
+		Sleep.sleep(1500);
 		System.exit(0);
 	}
 
 	private static void onAndOffAgain(BlinkStick blinkStick, Color color, int index) {
 		blinkStick.setIndexedColor(index, color.rgb());
-		sleep(100);
+		Sleep.sleep(100);
 		blinkStick.setIndexedColor(index, Black.rgb());
 	}
 
-	private static void sleep(int millis) {
-		try {
-			Thread.sleep(millis);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-	}
 }
