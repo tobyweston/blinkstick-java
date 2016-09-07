@@ -1,5 +1,7 @@
 package bad.robot.blinkstick;
 
+import java.security.SecureRandom;
+
 public enum Color {
 
 	Aqua("#00ffff"),
@@ -145,6 +147,8 @@ public enum Color {
 	White("#ffffff"),
 	Yellow("#ffff00");
 
+	private static final SecureRandom random = new SecureRandom();
+
 	private final String hex;
 
 	Color(String hex) {
@@ -157,6 +161,23 @@ public enum Color {
 		int blue = Integer.valueOf(hex.substring(5, 7), 16);
 
 		return 255 << 24 | red << 16 | green << 8 | blue;
+	}
+
+	public int getRed() {
+		return (rgb() >> 16) & 0xFF;
+	}
+
+	public int getGreen() {
+		return (rgb() >> 8) & 0xFF;
+	}
+
+	public int getBlue() {
+		return rgb() & 0xFF;
+	}
+
+	public static Color random() {
+		Color[] values = Color.values();
+		return values[random.nextInt(values.length)];
 	}
 
 }

@@ -16,16 +16,6 @@ public class BlinkStick {
 	}
 
 	/**
-	 * Assign HIDDevice
-	 *
-	 * @param device HID device object to communicate directly with BlinkStick
-	 */
-	private void setDevice(HIDDevice device) {
-		this.device = device;
-	}
-
-
-	/**
 	 * Set the color of the device with separate r, g and b int values.
 	 * The values are automatically converted to byte values
 	 *
@@ -34,7 +24,7 @@ public class BlinkStick {
 	 * @param b blue int color value 0..255
 	 */
 	public void setColor(int r, int g, int b) {
-		this.setColor((byte) r, (byte) g, (byte) b);
+		setColor((byte) r, (byte) g, (byte) b);
 	}
 
 	/**
@@ -62,7 +52,7 @@ public class BlinkStick {
 	 * @param b       blue int color value 0..255
 	 */
 	public void setIndexedColor(int channel, int index, int r, int g, int b) {
-		this.setIndexedColor((byte) channel, (byte) index, (byte) r, (byte) g, (byte) b);
+		setIndexedColor((byte) channel, (byte) index, (byte) r, (byte) g, (byte) b);
 	}
 
 	/**
@@ -94,21 +84,17 @@ public class BlinkStick {
 		int g = (value >> 8) & 0xFF;
 		int b = value & 0xFF;
 
-		this.setIndexedColor(channel, index, r, g, b);
+		setIndexedColor(channel, index, r, g, b);
 	}
 
 	/**
 	 * Set the indexed color of BlinkStick Pro with Processing color value for channel 0
 	 *
 	 * @param index Index of the LED
-	 * @param value color as int
+	 * @param color color as int
 	 */
-	public void setIndexedColor(int index, int value) {
-		int r = (value >> 16) & 0xFF;
-		int g = (value >> 8) & 0xFF;
-		int b = value & 0xFF;
-
-		this.setIndexedColor(0, index, r, g, b);
+	public void setIndexedColor(int index, Color color) {
+		setIndexedColor(0, index, color.getRed(), color.getGreen(), color.getBlue());
 	}
 
 	/**
@@ -121,20 +107,20 @@ public class BlinkStick {
 		int g = (value >> 8) & 0xFF;
 		int b = value & 0xFF;
 
-		this.setColor(r, g, b);
+		setColor(r, g, b);
 	}
 
 	public void setColor(Color color) {
-		this.setColor(color.rgb());
+		setColor(color.rgb());
 	}
 
 	public void setRandomColor() {
 		Random random = new Random();
-		this.setColor(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+		setColor(random.nextInt(256), random.nextInt(256), random.nextInt(256));
 	}
 
 	public void turnOff() {
-		this.setColor(0, 0, 0);
+		setColor(0, 0, 0);
 	}
 
 
@@ -358,7 +344,7 @@ public class BlinkStick {
 	 * @param colorData Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
 	 */
 	public void setColors(byte[] colorData) {
-		this.setColors((byte) 0, colorData);
+		setColors((byte) 0, colorData);
 	}
 
 	/**
@@ -368,7 +354,7 @@ public class BlinkStick {
 	 * @param colorData Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
 	 */
 	public void setColors(int channel, byte[] colorData) {
-		this.setColors((byte) channel, colorData);
+		setColors((byte) channel, colorData);
 	}
 
 	/**
@@ -378,10 +364,10 @@ public class BlinkStick {
 	 * @param colorData Report data must be a byte array in the following format: [g0, r0, b0, g1, r1, b1, g2, r2, b2 ...]
 	 */
 	public void setColors(byte channel, byte[] colorData) {
-		byte leds = this.determineMaxLeds(colorData.length);
+		byte leds = determineMaxLeds(colorData.length);
 		byte[] data = new byte[leds * 3 + 2];
 
-		data[0] = this.determineReportId(colorData.length);
+		data[0] = determineReportId(colorData.length);
 		data[1] = channel;
 
 

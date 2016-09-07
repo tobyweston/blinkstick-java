@@ -27,9 +27,9 @@ public class Spinner {
 	}
 
 	private static void onAndOffAgain(BlinkStick blinkStick, Color color, int index) {
-		blinkStick.setIndexedColor(index, color.rgb());
+		blinkStick.setIndexedColor(index, color);
 		Sleep.sleep(100);
-		blinkStick.setIndexedColor(index, Black.rgb());
+		blinkStick.setIndexedColor(index, Black);
 	}
 
 }
