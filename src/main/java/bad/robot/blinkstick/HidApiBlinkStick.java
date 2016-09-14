@@ -6,7 +6,6 @@ import java.util.Random;
 
 import static bad.robot.blinkstick.Mode.Unknown;
 import static bad.robot.blinkstick.ReportId.ModeReportId;
-import static java.lang.String.*;
 
 public class HidApiBlinkStick implements BlinkStick {
 
