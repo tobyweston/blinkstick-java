@@ -74,7 +74,7 @@ public class Usb {
 
 	private static BlinkStick createBlinkStick(HIDDeviceInfo info) {
 		try {
-			return new HidApiBlinkStick(info.open());
+			return new CodemindersApiBlinkStick(info.open());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}

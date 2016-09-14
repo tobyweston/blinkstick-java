@@ -7,11 +7,11 @@ import java.util.Random;
 import static bad.robot.blinkstick.Mode.Unknown;
 import static bad.robot.blinkstick.ReportId.ModeReportId;
 
-public class HidApiBlinkStick implements BlinkStick {
+public class CodemindersApiBlinkStick implements BlinkStick {
 
 	private HIDDevice device;
 
-	HidApiBlinkStick(HIDDevice device) {
+	CodemindersApiBlinkStick(HIDDevice device) {
 		this.device = device;
 	}
 
