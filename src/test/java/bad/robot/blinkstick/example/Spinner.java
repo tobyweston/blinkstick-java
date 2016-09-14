@@ -5,8 +5,7 @@ import bad.robot.blinkstick.Color;
 
 import java.util.stream.IntStream;
 
-import static bad.robot.blinkstick.Color.Black;
-import static bad.robot.blinkstick.Color.Red;
+import static bad.robot.blinkstick.Colors.*;
 import static bad.robot.blinkstick.Usb.findFirstBlinkStick;
 
 public class Spinner {
