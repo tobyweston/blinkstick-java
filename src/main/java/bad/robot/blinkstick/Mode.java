@@ -1,6 +1,5 @@
 package bad.robot.blinkstick;
 
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public enum Mode {
