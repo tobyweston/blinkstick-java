@@ -4,6 +4,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 
+import static bad.robot.blinkstick.Colors.Blue;
+import static bad.robot.blinkstick.Colors.Green;
 import static bad.robot.blinkstick.Colors.Red;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -14,6 +16,18 @@ public class ColorTest {
 	public void getRgb() {
 		assertThat(Red.rgb(), is(java.awt.Color.RED.getRGB()));
 		assertThat(Red.rgb(), is(-65536));
+	}
+
+	@Test
+	public void getRedGreenBlue() {
+		assertThat(Red.getRed(), is(255));
+		assertThat(Red.getGreen(), is(0));
+		assertThat(Red.getBlue(), is(0));
+
+		Color orange = new Color("#FFC800");
+		assertThat(orange.getRed(), is(255));
+		assertThat(orange.getGreen(), is(200));
+		assertThat(orange.getBlue(), is(0));
 	}
 
 	@Test
@@ -61,13 +75,5 @@ public class ColorTest {
 		assertThat(brightRed.darken(0.1).toString(), is("#190000"));
 		assertThat(brightRed.darken(0.0).toString(), is("#000000")); // darker
 	}
-
-	@Test
-	@Ignore
-	@Deprecated
-	public void someTestDeleteMe() {
-		assertThat(Red.apply(new Brightness(50)).toString(), is("#7F0000"));
-	}
-
 
 }

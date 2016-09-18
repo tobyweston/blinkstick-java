@@ -27,15 +27,15 @@ public class Color {
 	}
 
 	public int getRed() {
-		return toUnsignedInt(rgb() >> 16);
+		return toUnsignedInt(red);
 	}
 
 	public int getGreen() {
-		return toUnsignedInt(rgb() >> 8);
+		return toUnsignedInt(green);
 	}
 
 	public int getBlue() {
-		return toUnsignedInt(rgb());
+		return toUnsignedInt(blue);
 	}
 
 	public boolean maximumBrightness() {
@@ -73,10 +73,10 @@ public class Color {
 	}
 
 	@Override
-	public boolean equals(Object other) {
-		if (this == other) return true;
-		if (other == null || getClass() != other.getClass()) return false;
-		Color color = (Color) other;
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Color color = (Color) o;
 		return rgb() == color.rgb();
 
 	}
@@ -88,9 +88,9 @@ public class Color {
 
 	@Override
 	public String toString() {
-		int red = toUnsignedInt(rgb() >> 16);
-		int green = toUnsignedInt(rgb() >> 8);
-		int blue = toUnsignedInt(rgb());
+		int red = toUnsignedInt(this.red);
+		int green = toUnsignedInt(this.green);
+		int blue = toUnsignedInt(this.blue);
 
 		return format("#%02X%02X%02X", red, green, blue);
 //		return format(String.format("(%d,%d,%d)", red, green, blue));

@@ -3,6 +3,7 @@ package bad.robot.blinkstick;
 import org.junit.Test;
 
 import static bad.robot.blinkstick.Brightness.Max;
+import static java.lang.String.*;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
@@ -43,8 +44,8 @@ public class BrightnessTest {
 		assertThat(new Brightness(1).applyTo(midBlue).toString(), is("#000000"));
 		assertThat(new Brightness(50).applyTo(midBlue).toString(), is("#0A151C"));
 		assertThat(new Brightness(125).applyTo(midBlue).toString(), is("#193446"));
-		assertThat("wtf?", new Brightness(254).applyTo(midBlue).toString(), is("#346B90"));
-		assertThat("wtf?", new Brightness(255).applyTo(midBlue).toString(), is("#356C91"));
+		assertThat(new Brightness(254).applyTo(midBlue).toString(), is("#346B90"));
+		assertThat(new Brightness(255).applyTo(midBlue).toString(), is("#356C91"));
 	}
 
 	@Test
@@ -62,7 +63,10 @@ public class BrightnessTest {
 		assertThat("verify method requires a maximally bright color", color.maximumBrightness(), is(true));
 		Color darkened = darkenUsingJavaColor(color);
 		assertThat("maximising brightness on an already maximal color failed", Max.applyTo(color), is(color));
-		assertThat(String.format("did not brighten %s to %s", darkened, color), Max.applyTo(darkened), is(color));
+		assertThat(format("did not brighten %s to %s", darkened, color), Max.applyTo(darkened), is(color));
+
+//		assertThat("maximising brightness on an already maximal color failed", Brightness.applyBrightnessAsPercentage(color, 100), is(color));
+//		assertThat(format("did not brighten %s to %s", darkened, color), Brightness.applyBrightnessAsPercentage(darkened, 100), is(color));
 	}
 
 	private static Color darkenUsingJavaColor(Color color) {

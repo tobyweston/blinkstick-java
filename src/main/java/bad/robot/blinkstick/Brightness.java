@@ -20,16 +20,24 @@ public class Brightness {
 	}
 
 	public Color applyTo(Color color) {
-//		if (color.maximumBrightness())
-//			return color;
-
-		byte r = remap((color.getRed()), brightness);
-		byte g = remap((color.getGreen()), brightness);
-		byte b = remap((color.getBlue()), brightness);
+		byte r = applyBrightnessTo((color.getRed()), brightness);
+		byte g = applyBrightnessTo((color.getGreen()), brightness);
+		byte b = applyBrightnessTo((color.getBlue()), brightness);
 		return new Color(r, g, b);
 	}
 
-	private byte remap(int color, float brightness) {
+	public static Color applyBrightnessAsPercentage(Color color, int percent) {
+		if (color.maximumBrightness())
+			return color;
+		long amount = Math.round(2.55 * percent);
+		long r = color.getRed() + amount;
+		long g = color.getGreen() + amount;
+		long b = color.getBlue() + amount;
+		return new Color((byte) r, (byte) g, (byte) b);
+
+	}
+
+	private byte applyBrightnessTo(int color, float brightness) {
 //		if (brightness == 255)
 //			return (byte) color;
 
