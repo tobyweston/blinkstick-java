@@ -12,9 +12,7 @@ public class SinglePixelToggle {
 		Usb.findFirstBlinkStick().map(stick -> {
 			stick.setMode(Ws2812);
 			stick.setIndexedColor(0, Colors.Aqua);
-			Sleep.sleep(500);
 			stick.setIndexedColor(1, Colors.Green);
-			Sleep.sleep(500);
 			stick.setIndexedColor(0, Black);
 			stick.setIndexedColor(1, Black);
 			return null;
