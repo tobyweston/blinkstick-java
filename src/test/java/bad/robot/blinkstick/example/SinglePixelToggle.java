@@ -11,13 +11,14 @@ public class SinglePixelToggle {
 	public static void main(String... args) {
 		Usb.findFirstBlinkStick().map(stick -> {
 			stick.setMode(Ws2812);
-			stick.setIndexedColor(0, Colors.Aqua);
-			stick.setIndexedColor(1, Colors.Green);
-			stick.setIndexedColor(0, Black);
-			stick.setIndexedColor(1, Black);
+			for (int i = 0; i < 8; i++) {
+				stick.setIndexedColor(i, Colors.Green);
+				Sleep.sleep(200);
+				stick.setIndexedColor(i, Black);
+				Sleep.sleep(200);
+			}
 			return null;
 		});
 		System.exit(0);
-
 	}
 }
