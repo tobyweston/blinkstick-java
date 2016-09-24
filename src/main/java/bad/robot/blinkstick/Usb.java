@@ -1,5 +1,6 @@
 package bad.robot.blinkstick;
 
+import com.codeminders.hidapi.HIDDevice;
 import com.codeminders.hidapi.HIDDeviceInfo;
 import com.codeminders.hidapi.HIDManager;
 
@@ -74,7 +75,10 @@ public class Usb {
 
 	private static BlinkStick createBlinkStick(HIDDeviceInfo info) {
 		try {
-			return new RateLimitedBlinkStick(new CodemindersApiBlinkStick(info.open()));
+			HIDDevice device = Optional.ofNullable(info.open()).orElseThrow(() ->
+				new NullPointerException("Failed to open USB device, the native open() method returned null. Could be a OS/driver issue, check your library path. Otherwise, I have no idea.")
+			);
+			return new RateLimitedBlinkStick(new CodemindersApiBlinkStick(device));
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
