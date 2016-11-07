@@ -1,10 +1,12 @@
 package bad.robot.blinkstick;
 
-import java.util.function.Supplier;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 
-class RateLimitedBlinkStick implements BlinkStick {
+class RateLimitedBlinkStick implements InvocationHandler {
 
-	private static final long MaximumFrequency = 20;
+	private static final long MaximumFrequency = 50;
 
 	private final BlinkStick delegate;
 
@@ -14,156 +16,15 @@ class RateLimitedBlinkStick implements BlinkStick {
 		this.delegate = delegate;
 	}
 
-	@Override
-	public void setMode(Mode mode) {
-		rateLimit(() -> {
-			delegate.setMode(mode);
-			return null;
-		});
+	public BlinkStick createProxy() {
+		return (BlinkStick) Proxy.newProxyInstance(BlinkStick.class.getClassLoader(), new Class<?>[]{ BlinkStick.class }, this);
 	}
 
-	@Override
-	public Mode getMode() {
-		return rateLimit(delegate::getMode);
-	}
-
-	@Override
-	@Deprecated
-	public void setColor(int r, int g, int b) {
-		rateLimit(() -> {
-			delegate.setColor(r, g, b);
-			return null;
-		});
-	}
-
-	@Override
-	@Deprecated
-	public void setColor(int value) {
-		rateLimit(() -> {
-			delegate.setColor(value);
-			return null;
-		});
-	}
-
-	@Override
-	public void setColor(Color color) {
-		rateLimit(() -> {
-			delegate.setColor(color);
-			return null;
-		});
-	}
-
-	@Override
-	@Deprecated
-	public void setColors(byte[] colorData) {
-		rateLimit(() -> {
-			delegate.setColors(colorData);
-			return null;
-		});
-	}
-
-	@Override
-	@Deprecated
-	public void setColors(Channel channel, byte[] colorData) {
-		rateLimit(() -> {
-			delegate.setColors(channel, colorData);
-			return null;
-		});
-	}
-
-	@Override
-	@Deprecated
-	public void setIndexedColor(int channel, int index, int r, int g, int b) {
-		rateLimit(() -> {
-			delegate.setIndexedColor(channel, index, r, g, b);
-			return null;
-		});
-	}
-
-	@Override
-	@Deprecated
-	public void setIndexedColor(int channel, int index, int value) {
-		rateLimit(() -> {
-			delegate.setIndexedColor(channel, index, value);
-			return null;
-		});
-	}
-
-	@Override
-	public void setIndexedColor(int index, Color color) {
-		rateLimit(() -> {
-			delegate.setIndexedColor(index, color);
-			return null;
-		});
-	}
-
-	@Override
-	@Deprecated
-	public void setRandomColor() {
-		rateLimit(() -> {
-			delegate.setRandomColor();
-			return null;
-		});
-	}
-
-	@Override
-	public void turnOff() {
-		rateLimit(() -> {
-			delegate.turnOff();
-			return null;
-		});
-	}
-
-	@Override
-	public int getColor() {
-		return rateLimit(delegate::getColor);
-	}
-
-	@Override
-	public void setInfoBlock1(String value) {
-		rateLimit(() -> {
-			delegate.setInfoBlock1(value);
-			return null;
-		});
-	}
-
-	@Override
-	public void setInfoBlock2(String value) {
-		rateLimit(() -> {
-			delegate.setInfoBlock2(value);
-			return null;
-		});
-	}
-
-	@Override
-	public String getInfoBlock1() {
-		return rateLimit(delegate::getInfoBlock1);
-	}
-
-	@Override
-	public String getInfoBlock2() {
-		return rateLimit(delegate::getInfoBlock2);
-	}
-
-	@Override
-	public String getManufacturer() {
-		return rateLimit(delegate::getManufacturer);
-	}
-
-	@Override
-	public String getProductDescription() {
-		return rateLimit(delegate::getProductDescription);
-	}
-
-	@Override
-	public String getSerial() {
-		return rateLimit(delegate::getSerial);
-	}
-
-	private <T> T rateLimit(Supplier<T> callable) {
+	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
 		long timeSinceLastCall = System.currentTimeMillis() - timeOfLastCall;
+		System.out.printf("calling %s%n", method.getName());
 		if (timeSinceLastCall < MaximumFrequency) {
-			System.out.println("last call " + timeSinceLastCall + "ms waiting " + (MaximumFrequency - timeSinceLastCall));
+			System.out.printf("last call %dms waiting %d %n", timeSinceLastCall, MaximumFrequency - timeSinceLastCall);
 			try {
 				Thread.sleep(MaximumFrequency - timeSinceLastCall);
 			} catch (InterruptedException e) {
@@ -172,7 +33,7 @@ class RateLimitedBlinkStick implements BlinkStick {
 		}
 
 		try {
-			return callable.get();
+			return method.invoke(delegate, args);
 		} finally {
 			timeOfLastCall = System.currentTimeMillis();
 		}
