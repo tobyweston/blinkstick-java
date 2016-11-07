@@ -10,6 +10,7 @@ public class BlinkStickInfo {
 	public static void main(String... args) {
 		List<String> infos = findAllBlinkSticks().stream().map(stick -> {
 			StringBuilder info = new StringBuilder();
+			info.append("\n");
 			info.append(format("Product      : %s%n", stick.getProductDescription()));
 			info.append(format("Serial #     : %s%n", stick.getSerial()));
 			info.append(format("Manufacturer : %s%n", stick.getManufacturer()));
